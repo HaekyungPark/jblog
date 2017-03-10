@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="post">
+	<insert id="insert" parameterType="postvo">
+		<selectKey keyProperty="pno" resultType="long" order="BEFORE">
+			<![CDATA[
+			select seq_post.nextval from dual	
+			]]>
+		</selectKey>
+		<![CDATA[
+			insert
+				into post
+			values  (#{pno}, #{title}, #{content}, sysdate, #{cno} )
+		]]>
+	</insert>
+	<select id="getList" resultType="postvo" parameterType="string">
+		<![CDATA[
+			select a.PNO,
+	  			   a.TITLE, 
+	   			   a.CONTENT, 
+	      	 	   a.REG_DATE as regDate
+ 		 from post a, CATEGORY c
+ 			 where c.CNO = a.CNO and c.BLOG_ID =#{blogId}
+ 			 order by a.pno desc
+ 		
+		]]>
+	</select>
+		<select id="getPost" resultType="postvo" parameterType="long">
+		<![CDATA[
+			select pno,
+	   			   title,
+	  			   content,
+	   			   reg_date,
+	   			   cno
+  			  from post
+  			  where pno =#{pno}
+ 		
+		]]>
+	</select>
+	<select id="getMaxPno" resultType="long" parameterType="string">
+		<![CDATA[
+			select max(pno)
+			from post a, CATEGORY c
+			where c.BLOG_ID = #{blogId} 
+			and c.CNO = a.CNO
+		
+		]]>
+	</select>
+</mapper>
